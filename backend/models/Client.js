@@ -75,5 +75,17 @@ const clientSchema = new mongoose.Schema(
 
 clientSchema.index({ status: 1, createdBy: 1 });
 clientSchema.index({ status: 1, assignedCA: 1 });
+clientSchema.index(
+    { email: 1 },
+    { unique: true, partialFilterExpression: { is_deleted: false } }
+);
+clientSchema.index(
+    { phone: 1 },
+    { unique: true, partialFilterExpression: { is_deleted: false } }
+);
+clientSchema.index(
+    { panNumber: 1 },
+    { unique: true, partialFilterExpression: { is_deleted: false } }
+);
 
 export default mongoose.model("Client", clientSchema);

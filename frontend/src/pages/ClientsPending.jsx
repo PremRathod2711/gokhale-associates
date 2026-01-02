@@ -161,7 +161,7 @@ export default function ClientsPending() {
                         startIcon={<UploadFileIcon />}
                         onClick={(e) => {
                           e.stopPropagation();
-                          setUploadClientId(client._id);
+                          setUploadClientId(client);
                         }}
                       >
                         Upload XML
@@ -199,7 +199,7 @@ export default function ClientsPending() {
 
       {uploadClientId && (
         <UploadXmlModal
-          clientId={uploadClientId}
+          client={uploadClientId}
           onClose={() => setUploadClientId(null)}
           onSuccess={fetchClients}
         />

@@ -16,16 +16,29 @@ export const addClientController = async (req, res) => {
   try {
     const client = await createClient({
       ...req.body,
-      associateId: req.user.userId
+      associateId: req.user.userId,
     });
 
     return res.status(201).json({
       message: "Client added successfully",
-      data: client
+      data: client,
     });
   } catch (err) {
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      const messages = {
+        email: "Email already exists",
+        phone: "Phone already exists",
+        panNumber: "PAN already exists",
+      };
+
+      return res.status(409).json({
+        message: messages[field] || "Duplicate value",
+      });
+    }
+
     return res.status(400).json({
-      message: err.message
+      message: err.message,
     });
   }
 };
@@ -187,11 +200,9 @@ export const markPaymentDoneController = async (req, res) => {
   }
 };
 
-
 /**
  * Admin — Close Client
  */
-
 export const closeClientController = async (req, res) => {
   try {
     const { clientId } = req.params;

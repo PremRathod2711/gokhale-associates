@@ -40,6 +40,7 @@ export default function AddClientModal({ onClose, onSuccess }) {
 
     setForm((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: null }));
+    setApiError("");
   };
 
   const handleFileChange = (e) => {
@@ -76,6 +77,16 @@ export default function AddClientModal({ onClose, onSuccess }) {
     return err;
   };
 
+  const mapApiErrorToField = (message) => {
+    if (!message) return null;
+
+    if (message.toLowerCase().includes("email")) return "email";
+    if (message.toLowerCase().includes("phone")) return "phone";
+    if (message.toLowerCase().includes("pan")) return "panNumber";
+
+    return null;
+  };
+
   const submit = async () => {
     setApiError("");
 
@@ -97,9 +108,19 @@ export default function AddClientModal({ onClose, onSuccess }) {
 
       onSuccess();
     } catch (err) {
-      setApiError(
-        err.response?.data?.message || "Unable to add client. Please try again."
-      );
+      const message =
+          err.response?.data?.message || "Unable to add client. Please try again.";
+
+      const field = mapApiErrorToField(message);
+
+      if (field) {
+        setErrors((prev) => ({
+          ...prev,
+          [field]: message,
+        }));
+      } else {
+        setApiError(message);
+      }
     } finally {
       setLoading(false);
     }

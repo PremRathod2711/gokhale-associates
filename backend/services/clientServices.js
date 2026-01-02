@@ -2,30 +2,61 @@ import Client from "../models/Client.js";
 import CLIENT_STATUS from "../config/clientStatus.js";
 import Admin from "../models/Admin.js";
 
+
 const createClient = async ({
-  name,
-  email,
-  phone,
-  panNumber,
-  documents,
-  remarks,
-  associateId,
+name,
+email,
+phone,
+panNumber,
+documents,
+remarks,
+associateId,
 }) => {
+  const normalizedEmail = email.toLowerCase();
+  const normalizedPan = panNumber.toUpperCase();
+
+  if (
+      await Client.findOne({
+        email: normalizedEmail,
+        is_deleted: false,
+      })
+  ) {
+    throw new Error("Email already exists");
+  }
+
+  if (
+      await Client.findOne({
+        phone,
+        is_deleted: false,
+      })
+  ) {
+    throw new Error("Phone already exists");
+  }
+
+  if (
+      await Client.findOne({
+        panNumber: normalizedPan,
+        is_deleted: false,
+      })
+  ) {
+    throw new Error("PAN already exists");
+  }
+
   return Client.create({
     name,
-    email,
+    email: normalizedEmail,
     phone,
-    panNumber,
+    panNumber: normalizedPan,
     documents,
     remarks: remarks
-      ? [
+        ? [
           {
             remark: remarks,
             byRole: "ASSOCIATE",
             byUser: associateId,
           },
         ]
-      : [],
+        : [],
     createdBy: associateId,
     status: CLIENT_STATUS.PENDING,
   });

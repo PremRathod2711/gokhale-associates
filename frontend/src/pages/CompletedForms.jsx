@@ -69,7 +69,7 @@ export default function CompletedForms() {
         </Box>
       ) : clients.length === 0 ? (
         /* EMPTY STATE */
-        <Paper sx={{ p: 6, textAlign: "center", maxWidth: 600 }}>
+        <Paper sx={{ p: 6, textAlign: "center" }}>
           <Typography variant="h6" fontWeight={500}>
             No billing records found
           </Typography>
