@@ -21,10 +21,10 @@ const app = express();
 connectDB();
 
 app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true
-  })
+    cors({
+        origin: process.env.FRONTEND_URL,
+        credentials: true
+    })
 );
 
 app.use(express.json({ type: "*/*" }));
